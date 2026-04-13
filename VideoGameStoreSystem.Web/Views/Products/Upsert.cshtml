@@ -1,0 +1,61 @@
+@model VideoGameStoreSystem.Web.ViewModels.Products.ProductFormViewModel
+
+@{
+    var isEdit = Model.ProductId > 0;
+    ViewData["Title"] = isEdit ? "Редактирование товара" : "Добавление товара";
+}
+
+<div class="page-card">
+    <h2 class="fw-bold mb-3">@ViewData["Title"]</h2>
+    <form asp-action="@(isEdit ? "Edit" : "Create")" method="post" class="row g-3">
+        @Html.AntiForgeryToken()
+        <input asp-for="ProductId" type="hidden" />
+        <div asp-validation-summary="ModelOnly" class="text-danger small"></div>
+        <div class="col-md-6">
+            <label asp-for="ProductName" class="form-label"></label>
+            <input asp-for="ProductName" class="form-control" />
+            <span asp-validation-for="ProductName" class="text-danger small"></span>
+        </div>
+        <div class="col-md-3">
+            <label asp-for="CategoryId" class="form-label"></label>
+            <select asp-for="CategoryId" asp-items="Model.Categories.ToSelectList(Model.CategoryId)" class="form-select">
+                <option value="">Выберите категорию</option>
+            </select>
+            <span asp-validation-for="CategoryId" class="text-danger small"></span>
+        </div>
+        <div class="col-md-3">
+            <label asp-for="Sku" class="form-label"></label>
+            <input asp-for="Sku" class="form-control" />
+            <span asp-validation-for="Sku" class="text-danger small"></span>
+        </div>
+        <div class="col-md-6">
+            <label asp-for="Price" class="form-label"></label>
+            <input asp-for="Price" class="form-control" />
+            <span asp-validation-for="Price" class="text-danger small"></span>
+        </div>
+        <div class="col-md-6">
+            <label asp-for="CostPrice" class="form-label"></label>
+            <input asp-for="CostPrice" class="form-control" />
+            <span asp-validation-for="CostPrice" class="text-danger small"></span>
+        </div>
+        <div class="col-12">
+            <label asp-for="Description" class="form-label"></label>
+            <textarea asp-for="Description" class="form-control" rows="4"></textarea>
+            <span asp-validation-for="Description" class="text-danger small"></span>
+        </div>
+        <div class="col-12">
+            <div class="form-check">
+                <input asp-for="IsActive" class="form-check-input" />
+                <label asp-for="IsActive" class="form-check-label"></label>
+            </div>
+        </div>
+        <div class="col-12 d-flex gap-2">
+            <button type="submit" class="btn btn-primary">Сохранить</button>
+            <a asp-action="Index" class="btn btn-outline-secondary">Отмена</a>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

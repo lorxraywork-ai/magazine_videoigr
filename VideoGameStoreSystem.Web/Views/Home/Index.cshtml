@@ -1,0 +1,75 @@
+@model VideoGameStoreSystem.Web.ViewModels.Home.DashboardViewModel
+
+@{
+    ViewData["Title"] = "Главная";
+}
+
+<div class="dashboard-hero mb-4">
+    <div class="row g-4 align-items-center">
+        <div class="col-lg-8">
+            <span class="badge text-bg-primary rounded-pill mb-3">Учебное MVC-приложение</span>
+            <h1 class="display-6 fw-bold mb-3">Информационная система магазина видеоигр</h1>
+            <p class="lead mb-0">Система автоматизирует каталог товаров, складской учет, продажи, работу с клиентами, аналитику и аудит изменений.</p>
+        </div>
+        <div class="col-lg-4">
+            <div class="page-card h-100">
+                <h5 class="fw-semibold mb-3">Текущий пользователь</h5>
+                <div class="small text-muted mb-1">Логин</div>
+                <div class="mb-2">@Model.Login</div>
+                <div class="small text-muted mb-1">ФИО</div>
+                <div class="mb-2">@Model.FullName</div>
+                <div class="small text-muted mb-1">Роль</div>
+                <div>@Model.RoleName</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@if (User.Identity?.IsAuthenticated == true)
+{
+    <div class="row g-3 mb-4">
+        <div class="col-md-6 col-xl-3">
+            <div class="stats-card">
+                <div class="text-muted small">Товаров в системе</div>
+                <div class="display-6">@Model.ProductCount</div>
+            </div>
+        </div>
+        <div class="col-md-6 col-xl-3">
+            <div class="stats-card">
+                <div class="text-muted small">Позиции с низким остатком</div>
+                <div class="display-6 text-warning">@Model.LowStockCount</div>
+            </div>
+        </div>
+        <div class="col-md-6 col-xl-3">
+            <div class="stats-card">
+                <div class="text-muted small">Количество продаж</div>
+                <div class="display-6 text-success">@Model.SaleCount</div>
+            </div>
+        </div>
+        <div class="col-md-6 col-xl-3">
+            <div class="stats-card">
+                <div class="text-muted small">Совокупная выручка</div>
+                <div class="display-6">@Model.RevenueTotal.ToString("N2") ₽</div>
+            </div>
+        </div>
+    </div>
+}
+
+<div class="row g-3">
+    @foreach (var card in Model.Cards)
+    {
+        <div class="col-md-6 col-xl-4">
+            <a asp-controller="@card.Controller" asp-action="@card.Action" class="dashboard-card d-block">
+                <div class="d-flex align-items-start gap-3">
+                    <div class="dashboard-icon bg-@card.AccentClass-subtle text-@card.AccentClass">
+                        <i class="bi @card.Icon"></i>
+                    </div>
+                    <div>
+                        <h5 class="fw-semibold mb-2">@card.Title</h5>
+                        <p class="mb-0 text-muted">@card.Description</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+    }
+</div>

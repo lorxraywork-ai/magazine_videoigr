@@ -1,0 +1,24 @@
+@model VideoGameStoreSystem.Web.Models.AppUser
+
+@{
+    ViewData["Title"] = "Пользователь";
+}
+
+<div class="page-card">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2 class="fw-bold mb-0">@Model.Login</h2>
+        <a asp-action="Index" class="btn btn-outline-secondary">Назад</a>
+    </div>
+    <dl class="row">
+        <dt class="col-sm-3">ФИО</dt>
+        <dd class="col-sm-9">@Model.FullName</dd>
+        <dt class="col-sm-3">Email</dt>
+        <dd class="col-sm-9">@Model.Email</dd>
+        <dt class="col-sm-3">Роль</dt>
+        <dd class="col-sm-9">@Model.Role?.RoleName</dd>
+        <dt class="col-sm-3">Активен</dt>
+        <dd class="col-sm-9">@(Model.IsActive ? "Да" : "Нет")</dd>
+        <dt class="col-sm-3">Клиентская карточка</dt>
+        <dd class="col-sm-9">@Model.CustomerProfile?.FullName</dd>
+    </dl>
+</div>

@@ -1,0 +1,19 @@
+@model VideoGameStoreSystem.Web.Models.Supplier
+
+@{
+    ViewData["Title"] = "Удаление поставщика";
+}
+
+<div class="page-card">
+    <h2 class="fw-bold mb-3">Удаление поставщика</h2>
+    <p>Удалить поставщика <strong>@Model.SupplierName</strong>?</p>
+    <p class="text-muted">Если по поставщику уже есть документы поступления, удаление будет запрещено.</p>
+    <form asp-action="Delete" method="post">
+        @Html.AntiForgeryToken()
+        <input type="hidden" name="id" value="@Model.SupplierId" />
+        <div class="d-flex gap-2">
+            <button type="submit" class="btn btn-danger">Удалить</button>
+            <a asp-action="Index" class="btn btn-outline-secondary">Отмена</a>
+        </div>
+    </form>
+</div>

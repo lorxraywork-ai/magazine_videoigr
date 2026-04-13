@@ -1,0 +1,44 @@
+@model VideoGameStoreSystem.Web.ViewModels.Profile.PurchaseHistoryViewModel
+
+@{
+    ViewData["Title"] = "История покупок";
+}
+
+<div class="page-card">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <div>
+            <h2 class="fw-bold mb-1">История покупок клиента</h2>
+            <p class="text-muted mb-0">Все продажи, связанные с текущим клиентским аккаунтом.</p>
+        </div>
+        <a asp-action="Index" class="btn btn-outline-secondary">В профиль</a>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-striped align-middle">
+            <thead>
+                <tr>
+                    <th>Дата</th>
+                    <th>Продавец</th>
+                    <th>Позиции</th>
+                    <th>Сумма</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var sale in Model.Sales)
+                {
+                    <tr>
+                        <td>@sale.SaleDate.ToString("dd.MM.yyyy HH:mm")</td>
+                        <td>@sale.SellerUser?.FullName</td>
+                        <td>
+                            @foreach (var item in sale.Items)
+                            {
+                                <div>@item.Product?.ProductName x @item.Quantity</div>
+                            }
+                        </td>
+                        <td>@sale.TotalAmount.ToString("N2") ₽</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

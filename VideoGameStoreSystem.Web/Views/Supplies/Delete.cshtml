@@ -1,0 +1,19 @@
+@model VideoGameStoreSystem.Web.Models.Supply
+
+@{
+    ViewData["Title"] = "Удаление поступления";
+}
+
+<div class="page-card">
+    <h2 class="fw-bold mb-3">Удаление поступления</h2>
+    <p>Удалить поступление №<strong>@Model.SupplyId</strong> от @Model.SupplyDate.ToString("dd.MM.yyyy")?</p>
+    <p class="text-muted">При удалении документа остатки товаров будут уменьшены на соответствующие количества.</p>
+    <form asp-action="Delete" method="post">
+        @Html.AntiForgeryToken()
+        <input type="hidden" name="id" value="@Model.SupplyId" />
+        <div class="d-flex gap-2">
+            <button type="submit" class="btn btn-danger">Удалить</button>
+            <a asp-action="Index" class="btn btn-outline-secondary">Отмена</a>
+        </div>
+    </form>
+</div>

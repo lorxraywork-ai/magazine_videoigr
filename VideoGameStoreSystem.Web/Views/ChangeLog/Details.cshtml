@@ -1,0 +1,38 @@
+@model VideoGameStoreSystem.Web.Models.AppChangeLog
+
+@{
+    ViewData["Title"] = "Запись журнала";
+}
+
+<div class="page-card">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2 class="fw-bold mb-0">Запись журнала №@Model.ChangeLogId</h2>
+        <a asp-action="Index" class="btn btn-outline-secondary">Назад</a>
+    </div>
+    <dl class="row">
+        <dt class="col-sm-3">Дата</dt>
+        <dd class="col-sm-9">@Model.ChangedAt.ToString("dd.MM.yyyy HH:mm")</dd>
+        <dt class="col-sm-3">Сущность</dt>
+        <dd class="col-sm-9">@Model.EntityName</dd>
+        <dt class="col-sm-3">Ключ</dt>
+        <dd class="col-sm-9">@Model.EntityId</dd>
+        <dt class="col-sm-3">Действие</dt>
+        <dd class="col-sm-9">@Model.ActionType</dd>
+        <dt class="col-sm-3">Пользователь</dt>
+        <dd class="col-sm-9">@(Model.ChangedByUser?.Login ?? "Система")</dd>
+    </dl>
+    <div class="row g-3">
+        <div class="col-lg-6">
+            <div class="entity-card p-3 h-100">
+                <h5 class="fw-semibold">Старые значения</h5>
+                <pre class="mb-0 small">@Model.OldValues</pre>
+            </div>
+        </div>
+        <div class="col-lg-6">
+            <div class="entity-card p-3 h-100">
+                <h5 class="fw-semibold">Новые значения</h5>
+                <pre class="mb-0 small">@Model.NewValues</pre>
+            </div>
+        </div>
+    </div>
+</div>

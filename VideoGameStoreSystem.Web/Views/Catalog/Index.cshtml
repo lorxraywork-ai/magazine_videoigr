@@ -1,0 +1,68 @@
+@model VideoGameStoreSystem.Web.ViewModels.Catalog.CatalogIndexViewModel
+
+@{
+    ViewData["Title"] = "Каталог";
+}
+
+<div class="page-card mb-4">
+    <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+        <div>
+            <h2 class="fw-bold mb-1">Каталог товаров</h2>
+            <p class="text-muted mb-0">Ассортимент видеоигр, консолей и аксессуаров.</p>
+        </div>
+    </div>
+    <form method="get" class="row g-3">
+        <div class="col-md-5">
+            <label class="form-label">Поиск</label>
+            <input name="search" value="@Model.Search" class="form-control" placeholder="Название или SKU" />
+        </div>
+        <div class="col-md-3">
+            <label class="form-label">Категория</label>
+            <select name="categoryId" class="form-select">
+                <option value="">Все категории</option>
+                @foreach (var category in Model.Categories)
+                {
+                    <option value="@category.Key" selected="@(Model.CategoryId == category.Key)">@category.Value</option>
+                }
+            </select>
+        </div>
+        <div class="col-md-2 d-flex align-items-end">
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="onlyActive" value="true" checked="@Model.OnlyActive" />
+                <label class="form-check-label">Только активные</label>
+            </div>
+        </div>
+        <div class="col-md-2 d-flex align-items-end gap-2">
+            <button type="submit" class="btn btn-primary w-100">Фильтр</button>
+        </div>
+    </form>
+</div>
+
+<div class="row g-3">
+    @foreach (var item in Model.Products)
+    {
+        <div class="col-md-6 col-xl-4">
+            <div class="catalog-card">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between mb-2">
+                        <span class="badge badge-soft">@item.CategoryName</span>
+                        <span class="small text-muted">@item.Sku</span>
+                    </div>
+                    <h5 class="fw-semibold">@item.ProductName</h5>
+                    <p class="text-muted small">@item.Description</p>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <div class="small text-muted">Цена</div>
+                            <div class="fw-bold">@item.Price.ToString("N2") ₽</div>
+                        </div>
+                        <div class="text-end">
+                            <div class="small text-muted">Остаток</div>
+                            <div class="fw-semibold">@item.StockQuantity</div>
+                        </div>
+                    </div>
+                    <a asp-action="Details" asp-route-id="@item.ProductId" class="btn btn-outline-primary w-100 mt-3">Карточка товара</a>
+                </div>
+            </div>
+        </div>
+    }
+</div>

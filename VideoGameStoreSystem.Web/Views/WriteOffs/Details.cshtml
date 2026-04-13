@@ -1,0 +1,39 @@
+@model VideoGameStoreSystem.Web.Models.WriteOff
+
+@{
+    ViewData["Title"] = "Списание";
+}
+
+<div class="page-card">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2 class="fw-bold mb-0">Списание №@Model.WriteOffId</h2>
+        <a asp-action="Index" class="btn btn-outline-secondary">Назад</a>
+    </div>
+    <dl class="row">
+        <dt class="col-sm-3">Дата</dt>
+        <dd class="col-sm-9">@Model.WriteOffDate.ToString("dd.MM.yyyy")</dd>
+        <dt class="col-sm-3">Причина</dt>
+        <dd class="col-sm-9">@Model.Reason</dd>
+        <dt class="col-sm-3">Создал</dt>
+        <dd class="col-sm-9">@Model.CreatedByUser?.FullName</dd>
+    </dl>
+    <div class="table-responsive">
+        <table class="table table-striped align-middle">
+            <thead>
+                <tr>
+                    <th>Товар</th>
+                    <th>Количество</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.Items)
+                {
+                    <tr>
+                        <td>@item.Product?.ProductName</td>
+                        <td>@item.Quantity</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

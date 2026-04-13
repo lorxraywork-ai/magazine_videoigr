@@ -1,0 +1,75 @@
+@model VideoGameStoreSystem.Web.ViewModels.ChangeLog.ChangeLogIndexViewModel
+
+@{
+    ViewData["Title"] = "Журнал изменений";
+}
+
+<div class="page-card">
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
+        <div>
+            <h2 class="fw-bold mb-1">Журнал изменений</h2>
+            <p class="text-muted mb-0">Аудит операций создания, редактирования и удаления записей.</p>
+        </div>
+        <a asp-action="Export"
+           asp-route-search="@Model.Search"
+           asp-route-actionType="@Model.ActionType"
+           asp-route-dateFrom="@Model.DateFrom"
+           asp-route-dateTo="@Model.DateTo"
+           class="btn btn-outline-success">Excel</a>
+    </div>
+
+    <form method="get" class="row g-3 mb-3">
+        <div class="col-md-4">
+            <label class="form-label">Поиск</label>
+            <input name="search" value="@Model.Search" class="form-control" />
+        </div>
+        <div class="col-md-2">
+            <label class="form-label">Действие</label>
+            <select name="actionType" class="form-select">
+                <option value="">Все</option>
+                <option value="CREATE" selected="@(Model.ActionType == "CREATE")">CREATE</option>
+                <option value="UPDATE" selected="@(Model.ActionType == "UPDATE")">UPDATE</option>
+                <option value="DELETE" selected="@(Model.ActionType == "DELETE")">DELETE</option>
+            </select>
+        </div>
+        <div class="col-md-2">
+            <label class="form-label">С</label>
+            <input type="date" name="dateFrom" value="@Model.DateFrom?.ToString("yyyy-MM-dd")" class="form-control" />
+        </div>
+        <div class="col-md-2">
+            <label class="form-label">По</label>
+            <input type="date" name="dateTo" value="@Model.DateTo?.ToString("yyyy-MM-dd")" class="form-control" />
+        </div>
+        <div class="col-md-2 d-flex align-items-end">
+            <button type="submit" class="btn btn-primary w-100">Фильтр</button>
+        </div>
+    </form>
+
+    <div class="table-responsive">
+        <table class="table table-striped align-middle">
+            <thead>
+                <tr>
+                    <th>Дата</th>
+                    <th>Сущность</th>
+                    <th>Действие</th>
+                    <th>Пользователь</th>
+                    <th class="text-end">Подробно</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.Items)
+                {
+                    <tr>
+                        <td>@item.ChangedAt.ToString("dd.MM.yyyy HH:mm")</td>
+                        <td>@item.EntityName<br /><span class="small text-muted">@item.EntityId</span></td>
+                        <td>@item.ActionType</td>
+                        <td>@(item.ChangedByUser?.Login ?? "Система")</td>
+                        <td class="text-end">
+                            <a asp-action="Details" asp-route-id="@item.ChangeLogId" class="btn btn-sm btn-outline-secondary">Открыть</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

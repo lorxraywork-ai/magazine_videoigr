@@ -1,0 +1,60 @@
+@model VideoGameStoreSystem.Web.ViewModels.Profile.ProfileViewModel
+
+@{
+    ViewData["Title"] = "Профиль";
+}
+
+<div class="page-card">
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-4">
+        <div>
+            <h2 class="fw-bold mb-1">Профиль пользователя</h2>
+            <p class="text-muted mb-0">Данные текущей учетной записи и связанного клиента.</p>
+        </div>
+        @if (User.HasPermission(AppPermissions.PurchaseHistoryView))
+        {
+            <a asp-action="PurchaseHistory" class="btn btn-primary">История покупок</a>
+        }
+    </div>
+
+    <div class="row g-4">
+        <div class="col-lg-6">
+            <div class="entity-card p-3 h-100">
+                <h5 class="fw-semibold mb-3">Учетная запись</h5>
+                <dl class="row mb-0">
+                    <dt class="col-sm-4">Логин</dt>
+                    <dd class="col-sm-8">@Model.Login</dd>
+                    <dt class="col-sm-4">ФИО</dt>
+                    <dd class="col-sm-8">@Model.FullName</dd>
+                    <dt class="col-sm-4">Email</dt>
+                    <dd class="col-sm-8">@Model.Email</dd>
+                    <dt class="col-sm-4">Роль</dt>
+                    <dd class="col-sm-8">@Model.RoleName</dd>
+                    <dt class="col-sm-4">Активен</dt>
+                    <dd class="col-sm-8">@(Model.IsActive ? "Да" : "Нет")</dd>
+                    <dt class="col-sm-4">Создан</dt>
+                    <dd class="col-sm-8">@Model.CreatedAt.ToString("dd.MM.yyyy HH:mm")</dd>
+                </dl>
+            </div>
+        </div>
+        <div class="col-lg-6">
+            <div class="entity-card p-3 h-100">
+                <h5 class="fw-semibold mb-3">Данные клиента</h5>
+                @if (Model.CustomerProfile is null)
+                {
+                    <div class="text-muted">К учетной записи не привязана клиентская карточка.</div>
+                }
+                else
+                {
+                    <dl class="row mb-0">
+                        <dt class="col-sm-4">ФИО</dt>
+                        <dd class="col-sm-8">@Model.CustomerProfile.FullName</dd>
+                        <dt class="col-sm-4">Телефон</dt>
+                        <dd class="col-sm-8">@Model.CustomerProfile.Phone</dd>
+                        <dt class="col-sm-4">Email</dt>
+                        <dd class="col-sm-8">@Model.CustomerProfile.Email</dd>
+                    </dl>
+                }
+            </div>
+        </div>
+    </div>
+</div>

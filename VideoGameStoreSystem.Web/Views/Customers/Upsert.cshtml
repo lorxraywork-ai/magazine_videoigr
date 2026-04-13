@@ -1,0 +1,44 @@
+@model VideoGameStoreSystem.Web.ViewModels.Customers.CustomerFormViewModel
+
+@{
+    var isEdit = Model.CustomerId > 0;
+    ViewData["Title"] = isEdit ? "Редактирование клиента" : "Добавление клиента";
+}
+
+<div class="page-card">
+    <h2 class="fw-bold mb-3">@ViewData["Title"]</h2>
+    <form asp-action="@(isEdit ? "Edit" : "Create")" method="post" class="row g-3">
+        @Html.AntiForgeryToken()
+        <input asp-for="CustomerId" type="hidden" />
+        <div asp-validation-summary="ModelOnly" class="text-danger small"></div>
+        <div class="col-md-6">
+            <label asp-for="FullName" class="form-label"></label>
+            <input asp-for="FullName" class="form-control" />
+            <span asp-validation-for="FullName" class="text-danger small"></span>
+        </div>
+        <div class="col-md-3">
+            <label asp-for="Phone" class="form-label"></label>
+            <input asp-for="Phone" class="form-control" />
+            <span asp-validation-for="Phone" class="text-danger small"></span>
+        </div>
+        <div class="col-md-3">
+            <label asp-for="Email" class="form-label"></label>
+            <input asp-for="Email" class="form-control" />
+            <span asp-validation-for="Email" class="text-danger small"></span>
+        </div>
+        <div class="col-md-6">
+            <label asp-for="UserId" class="form-label"></label>
+            <select asp-for="UserId" asp-items="Model.Users.ToSelectList(Model.UserId)" class="form-select">
+                <option value="">Без привязки</option>
+            </select>
+        </div>
+        <div class="col-12 d-flex gap-2">
+            <button type="submit" class="btn btn-primary">Сохранить</button>
+            <a asp-action="Index" class="btn btn-outline-secondary">Отмена</a>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

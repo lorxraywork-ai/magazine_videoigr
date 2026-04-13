@@ -1,0 +1,33 @@
+@model VideoGameStoreSystem.Web.ViewModels.Catalog.CatalogDetailsViewModel
+
+@{
+    ViewData["Title"] = "Карточка товара";
+}
+
+<div class="page-card">
+    <div class="d-flex justify-content-between align-items-start flex-wrap gap-3">
+        <div>
+            <span class="badge badge-soft mb-2">@Model.CategoryName</span>
+            <h2 class="fw-bold">@Model.ProductName</h2>
+            <div class="text-muted">@Model.Sku</div>
+        </div>
+        <a asp-action="Index" class="btn btn-outline-secondary">Назад в каталог</a>
+    </div>
+    <hr />
+    <div class="row g-4">
+        <div class="col-lg-8">
+            <h5 class="fw-semibold">Описание</h5>
+            <p class="mb-0">@Model.Description</p>
+        </div>
+        <div class="col-lg-4">
+            <div class="entity-card p-3">
+                <div class="small text-muted">Цена продажи</div>
+                <div class="display-6 fw-bold">@Model.Price.ToString("N2") ₽</div>
+                <div class="small text-muted mt-3">Актуальный остаток</div>
+                <div class="fw-semibold">@Model.StockQuantity шт.</div>
+                <div class="small text-muted mt-3">Статус</div>
+                <div>@(Model.IsActive ? "Активен" : "Неактивен")</div>
+            </div>
+        </div>
+    </div>
+</div>

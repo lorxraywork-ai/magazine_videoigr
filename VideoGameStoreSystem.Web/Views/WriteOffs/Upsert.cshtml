@@ -1,0 +1,63 @@
+@model VideoGameStoreSystem.Web.ViewModels.WriteOffs.WriteOffEditViewModel
+
+@{
+    var isEdit = Model.WriteOffId > 0;
+    ViewData["Title"] = isEdit ? "Редактирование списания" : "Новое списание";
+    while (Model.Items.Count < 5)
+    {
+        Model.Items.Add(new VideoGameStoreSystem.Web.ViewModels.WriteOffs.WriteOffItemInputViewModel());
+    }
+}
+
+<div class="page-card">
+    <h2 class="fw-bold mb-3">@ViewData["Title"]</h2>
+    <form asp-action="@(isEdit ? "Edit" : "Create")" method="post">
+        @Html.AntiForgeryToken()
+        <input asp-for="WriteOffId" type="hidden" />
+        <div asp-validation-summary="ModelOnly" class="text-danger small mb-3"></div>
+        <div class="row g-3 mb-4">
+            <div class="col-md-4">
+                <label asp-for="WriteOffDate" class="form-label"></label>
+                <input asp-for="WriteOffDate" type="date" class="form-control" />
+            </div>
+            <div class="col-md-8">
+                <label asp-for="Reason" class="form-label"></label>
+                <input asp-for="Reason" class="form-control" />
+                <span asp-validation-for="Reason" class="text-danger small"></span>
+            </div>
+        </div>
+        <h5 class="fw-semibold mb-3">Позиции документа</h5>
+        <div class="table-responsive">
+            <table class="table table-bordered align-middle">
+                <thead>
+                    <tr>
+                        <th>Товар</th>
+                        <th>Количество</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @for (var i = 0; i < Model.Items.Count; i++)
+                    {
+                        <tr class="document-row">
+                            <td>
+                                <select name="Items[@i].ProductId" class="form-select">
+                                    <option value="">Не выбрано</option>
+                                    @foreach (var product in Model.Products)
+                                    {
+                                        <option value="@product.Value" selected="@(Model.Items[i].ProductId == product.Value)">@product.Text</option>
+                                    }
+                                </select>
+                            </td>
+                            <td><input name="Items[@i].Quantity" value="@Model.Items[i].Quantity" class="form-control" /></td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+        <div class="small text-muted mb-3">Пустые строки будут проигнорированы при сохранении.</div>
+        <div class="d-flex gap-2">
+            <button type="submit" class="btn btn-primary">Сохранить</button>
+            <a asp-action="Index" class="btn btn-outline-secondary">Отмена</a>
+        </div>
+    </form>
+</div>

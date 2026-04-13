@@ -1,0 +1,159 @@
+@model VideoGameStoreSystem.Web.ViewModels.Reports.SalesProfitReportViewModel
+@using System.Text.Json
+
+@{
+    ViewData["Title"] = "Отчеты";
+    var topProductLabels = JsonSerializer.Serialize(Model.TopProducts.Select(item => item.ProductName));
+    var topProductValues = JsonSerializer.Serialize(Model.TopProducts.Select(item => item.Quantity));
+    var categoryLabels = JsonSerializer.Serialize(Model.CategorySales.Select(item => item.CategoryName));
+    var categoryValues = JsonSerializer.Serialize(Model.CategorySales.Select(item => item.Revenue));
+}
+
+<div class="page-card mb-4">
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
+        <div>
+            <h2 class="fw-bold mb-1">Отчет по продажам и прибыли</h2>
+            <p class="text-muted mb-0">Сводная аналитика по продажам магазина видеоигр за выбранный период.</p>
+        </div>
+        <a asp-action="Export" asp-route-dateFrom="@Model.DateFrom" asp-route-dateTo="@Model.DateTo" class="btn btn-outline-success">Excel</a>
+    </div>
+
+    <form method="get" class="row g-3">
+        <div class="col-md-3">
+            <label class="form-label">Период с</label>
+            <input type="date" name="dateFrom" value="@Model.DateFrom.ToString("yyyy-MM-dd")" class="form-control" />
+        </div>
+        <div class="col-md-3">
+            <label class="form-label">Период по</label>
+            <input type="date" name="dateTo" value="@Model.DateTo.ToString("yyyy-MM-dd")" class="form-control" />
+        </div>
+        <div class="col-md-2 d-flex align-items-end">
+            <button type="submit" class="btn btn-primary w-100">Сформировать</button>
+        </div>
+    </form>
+</div>
+
+<div class="row g-3 mb-4">
+    <div class="col-md-4">
+        <div class="stats-card">
+            <div class="text-muted small">Количество продаж</div>
+            <div class="display-6">@Model.SaleCount</div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="stats-card">
+            <div class="text-muted small">Общая выручка</div>
+            <div class="display-6">@Model.RevenueTotal.ToString("N2") ₽</div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="stats-card">
+            <div class="text-muted small">Предполагаемая прибыль</div>
+            <div class="display-6 text-success">@Model.ProfitTotal.ToString("N2") ₽</div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4 mb-4">
+    <div class="col-lg-7">
+        <div class="page-card">
+            <h5 class="fw-semibold mb-3">Топ-10 самых продаваемых товаров</h5>
+            <canvas id="topProductsChart" height="190"></canvas>
+        </div>
+    </div>
+    <div class="col-lg-5">
+        <div class="page-card">
+            <h5 class="fw-semibold mb-3">Распределение выручки по категориям</h5>
+            <canvas id="categoriesChart" height="190"></canvas>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4">
+    <div class="col-lg-7">
+        <div class="page-card">
+            <h5 class="fw-semibold mb-3">Топ товаров</h5>
+            <div class="table-responsive">
+                <table class="table table-striped align-middle">
+                    <thead>
+                        <tr>
+                            <th>Товар</th>
+                            <th>Количество</th>
+                            <th>Выручка</th>
+                            <th>Прибыль</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.TopProducts)
+                        {
+                            <tr>
+                                <td>@item.ProductName</td>
+                                <td>@item.Quantity</td>
+                                <td>@item.Revenue.ToString("N2") ₽</td>
+                                <td>@item.Profit.ToString("N2") ₽</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-5">
+        <div class="page-card">
+            <h5 class="fw-semibold mb-3">Продажи по категориям</h5>
+            <div class="table-responsive">
+                <table class="table table-striped align-middle">
+                    <thead>
+                        <tr>
+                            <th>Категория</th>
+                            <th>Количество</th>
+                            <th>Выручка</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.CategorySales)
+                        {
+                            <tr>
+                                <td>@item.CategoryName</td>
+                                <td>@item.Quantity</td>
+                                <td>@item.Revenue.ToString("N2") ₽</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+    <script>
+        new Chart(document.getElementById("topProductsChart"), {
+            type: "bar",
+            data: {
+                labels: @Html.Raw(topProductLabels),
+                datasets: [{
+                    label: "Количество продаж",
+                    data: @Html.Raw(topProductValues),
+                    backgroundColor: "#0d6efd"
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: { legend: { display: false } }
+            }
+        });
+
+        new Chart(document.getElementById("categoriesChart"), {
+            type: "pie",
+            data: {
+                labels: @Html.Raw(categoryLabels),
+                datasets: [{
+                    data: @Html.Raw(categoryValues),
+                    backgroundColor: ["#0d6efd", "#20c997", "#fd7e14", "#6610f2", "#6f42c1", "#dc3545"]
+                }]
+            }
+        });
+    </script>
+}

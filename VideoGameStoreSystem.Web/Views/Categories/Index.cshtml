@@ -1,0 +1,60 @@
+@model VideoGameStoreSystem.Web.ViewModels.Categories.CategoryIndexViewModel
+
+@{
+    ViewData["Title"] = "Категории";
+}
+
+<div class="page-card">
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
+        <div>
+            <h2 class="fw-bold mb-1">Категории товаров</h2>
+            <p class="text-muted mb-0">Справочник категорий для видеоигр, консолей и аксессуаров.</p>
+        </div>
+        <div class="d-flex gap-2">
+            @if (User.HasPermission(AppPermissions.CategoriesManage))
+            {
+                <a asp-action="Create" class="btn btn-primary">Добавить</a>
+            }
+            <a asp-action="Export" asp-route-search="@Model.Search" class="btn btn-outline-success">Excel</a>
+        </div>
+    </div>
+
+    <form method="get" class="row g-3 mb-3">
+        <div class="col-md-6">
+            <label class="form-label">Поиск</label>
+            <input name="search" value="@Model.Search" class="form-control" placeholder="Название категории" />
+        </div>
+        <div class="col-md-2 d-flex align-items-end">
+            <button type="submit" class="btn btn-primary w-100">Найти</button>
+        </div>
+    </form>
+
+    <div class="table-responsive">
+        <table class="table table-striped align-middle">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Название</th>
+                    <th class="text-end">Действия</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.Items)
+                {
+                    <tr>
+                        <td>@item.CategoryId</td>
+                        <td>@item.CategoryName</td>
+                        <td class="text-end">
+                            <a asp-action="Details" asp-route-id="@item.CategoryId" class="btn btn-sm btn-outline-secondary">Подробнее</a>
+                            @if (User.HasPermission(AppPermissions.CategoriesManage))
+                            {
+                                <a asp-action="Edit" asp-route-id="@item.CategoryId" class="btn btn-sm btn-outline-primary">Изменить</a>
+                                <a asp-action="Delete" asp-route-id="@item.CategoryId" class="btn btn-sm btn-outline-danger">Удалить</a>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

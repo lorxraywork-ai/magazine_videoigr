@@ -1,0 +1,43 @@
+@model VideoGameStoreSystem.Web.Models.Supply
+
+@{
+    ViewData["Title"] = "Поступление";
+}
+
+<div class="page-card">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2 class="fw-bold mb-0">Поступление №@Model.SupplyId</h2>
+        <a asp-action="Index" class="btn btn-outline-secondary">Назад</a>
+    </div>
+    <dl class="row">
+        <dt class="col-sm-3">Дата</dt>
+        <dd class="col-sm-9">@Model.SupplyDate.ToString("dd.MM.yyyy")</dd>
+        <dt class="col-sm-3">Поставщик</dt>
+        <dd class="col-sm-9">@Model.Supplier?.SupplierName</dd>
+        <dt class="col-sm-3">Сумма</dt>
+        <dd class="col-sm-9">@Model.TotalAmount.ToString("N2") ₽</dd>
+    </dl>
+    <div class="table-responsive">
+        <table class="table table-striped align-middle">
+            <thead>
+                <tr>
+                    <th>Товар</th>
+                    <th>Количество</th>
+                    <th>Цена закупки</th>
+                    <th>Сумма</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.Items)
+                {
+                    <tr>
+                        <td>@item.Product?.ProductName</td>
+                        <td>@item.Quantity</td>
+                        <td>@item.UnitCost.ToString("N2") ₽</td>
+                        <td>@((item.Quantity * item.UnitCost).ToString("N2")) ₽</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

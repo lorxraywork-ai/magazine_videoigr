@@ -1,0 +1,19 @@
+@model VideoGameStoreSystem.Web.Models.Product
+
+@{
+    ViewData["Title"] = "Удаление товара";
+}
+
+<div class="page-card">
+    <h2 class="fw-bold mb-3">Удаление товара</h2>
+    <p>Удалить товар <strong>@Model.ProductName</strong>?</p>
+    <p class="text-muted">Если товар участвует в поставках, продажах или списаниях, удаление будет запрещено.</p>
+    <form asp-action="Delete" method="post">
+        @Html.AntiForgeryToken()
+        <input type="hidden" name="id" value="@Model.ProductId" />
+        <div class="d-flex gap-2">
+            <button type="submit" class="btn btn-danger">Удалить</button>
+            <a asp-action="Index" class="btn btn-outline-secondary">Отмена</a>
+        </div>
+    </form>
+</div>
