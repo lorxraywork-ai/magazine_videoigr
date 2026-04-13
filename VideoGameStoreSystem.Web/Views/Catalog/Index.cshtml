@@ -2,6 +2,7 @@
 
 @{
     ViewData["Title"] = "Каталог";
+    var returnUrl = $"{Context.Request.Path}{Context.Request.QueryString}";
 }
 
 <div class="page-card mb-4">
@@ -60,7 +61,25 @@
                             <div class="fw-semibold">@item.StockQuantity</div>
                         </div>
                     </div>
-                    <a asp-action="Details" asp-route-id="@item.ProductId" class="btn btn-outline-primary w-100 mt-3">Карточка товара</a>
+                    <div class="d-grid gap-2 mt-3">
+                        <a asp-action="Details" asp-route-id="@item.ProductId" class="btn btn-outline-primary">Карточка товара</a>
+                        @if (item.IsActive && item.StockQuantity > 0)
+                        {
+                            <form asp-controller="Cart" asp-action="Add" method="post">
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="productId" value="@item.ProductId" />
+                                <input type="hidden" name="quantity" value="1" />
+                                <input type="hidden" name="returnUrl" value="@returnUrl" />
+                                <button type="submit" class="btn btn-primary w-100">
+                                    <i class="bi bi-cart-plus me-1"></i>В корзину
+                                </button>
+                            </form>
+                        }
+                        else
+                        {
+                            <button type="button" class="btn btn-outline-secondary" disabled>Нет в наличии</button>
+                        }
+                    </div>
                 </div>
             </div>
         </div>

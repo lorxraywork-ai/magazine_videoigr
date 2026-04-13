@@ -18,6 +18,11 @@ public class SalesController(
 {
     public async Task<IActionResult> Index(DateTime? dateFrom, DateTime? dateTo, int? sellerUserId, decimal? minAmount, decimal? maxAmount)
     {
+        if (User.IsInRole(AppRoles.Seller) && User.GetUserId().HasValue)
+        {
+            sellerUserId = User.GetUserId();
+        }
+
         var query = dbContext.Sales
             .AsNoTracking()
             .Include(item => item.Customer)
@@ -92,6 +97,7 @@ public class SalesController(
     [PermissionAuthorize(AppPermissions.SalesManage)]
     public async Task<IActionResult> Create(SaleEditViewModel model)
     {
+        RemoveIgnoredItemValidationErrors(model.Items);
         model.Items = NormalizeItems(model.Items);
         await FillLookupsAsync(model);
 
@@ -159,6 +165,7 @@ public class SalesController(
     [PermissionAuthorize(AppPermissions.SalesManage)]
     public async Task<IActionResult> Edit(SaleEditViewModel model)
     {
+        RemoveIgnoredItemValidationErrors(model.Items);
         model.Items = NormalizeItems(model.Items);
         await FillLookupsAsync(model);
 
@@ -277,6 +284,11 @@ public class SalesController(
 
     public async Task<FileResult> Export(DateTime? dateFrom, DateTime? dateTo, int? sellerUserId, decimal? minAmount, decimal? maxAmount)
     {
+        if (User.IsInRole(AppRoles.Seller) && User.GetUserId().HasValue)
+        {
+            sellerUserId = User.GetUserId();
+        }
+
         var query = dbContext.Sales.AsNoTracking().Include(item => item.Customer).Include(item => item.SellerUser).AsQueryable();
         if (dateFrom.HasValue)
         {
@@ -378,5 +390,25 @@ public class SalesController(
         return items
             .Where(item => item.ProductId > 0 && item.Quantity > 0 && item.UnitPrice > 0)
             .ToList();
+    }
+
+    private void RemoveIgnoredItemValidationErrors(IReadOnlyList<SaleItemInputViewModel> items)
+    {
+        for (var i = 0; i < items.Count; i++)
+        {
+            if (!IsEmptyItemRow(items[i]))
+            {
+                continue;
+            }
+
+            ModelState.Remove($"Items[{i}].ProductId");
+            ModelState.Remove($"Items[{i}].Quantity");
+            ModelState.Remove($"Items[{i}].UnitPrice");
+        }
+    }
+
+    private static bool IsEmptyItemRow(SaleItemInputViewModel item)
+    {
+        return item.ProductId <= 0 && item.Quantity <= 0 && item.UnitPrice <= 0;
     }
 }

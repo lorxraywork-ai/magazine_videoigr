@@ -84,6 +84,7 @@ public class SuppliesController(
     [PermissionAuthorize(AppPermissions.SuppliesManage)]
     public async Task<IActionResult> Create(SupplyEditViewModel model)
     {
+        RemoveIgnoredItemValidationErrors(model.Items);
         model.Items = NormalizeItems(model.Items);
         await FillLookupsAsync(model);
 
@@ -143,6 +144,7 @@ public class SuppliesController(
     [PermissionAuthorize(AppPermissions.SuppliesManage)]
     public async Task<IActionResult> Edit(SupplyEditViewModel model)
     {
+        RemoveIgnoredItemValidationErrors(model.Items);
         model.Items = NormalizeItems(model.Items);
         await FillLookupsAsync(model);
 
@@ -335,5 +337,25 @@ public class SuppliesController(
         return items
             .Where(item => item.ProductId > 0 && item.Quantity > 0 && item.UnitCost > 0)
             .ToList();
+    }
+
+    private void RemoveIgnoredItemValidationErrors(IReadOnlyList<SupplyItemInputViewModel> items)
+    {
+        for (var i = 0; i < items.Count; i++)
+        {
+            if (!IsEmptyItemRow(items[i]))
+            {
+                continue;
+            }
+
+            ModelState.Remove($"Items[{i}].ProductId");
+            ModelState.Remove($"Items[{i}].Quantity");
+            ModelState.Remove($"Items[{i}].UnitCost");
+        }
+    }
+
+    private static bool IsEmptyItemRow(SupplyItemInputViewModel item)
+    {
+        return item.ProductId <= 0 && item.Quantity <= 0 && item.UnitCost <= 0;
     }
 }

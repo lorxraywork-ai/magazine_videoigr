@@ -71,6 +71,7 @@ public class WriteOffsController(
     [PermissionAuthorize(AppPermissions.WriteOffsManage)]
     public async Task<IActionResult> Create(WriteOffEditViewModel model)
     {
+        RemoveIgnoredItemValidationErrors(model.Items);
         model.Items = NormalizeItems(model.Items);
         await FillLookupsAsync(model);
 
@@ -135,6 +136,7 @@ public class WriteOffsController(
     [PermissionAuthorize(AppPermissions.WriteOffsManage)]
     public async Task<IActionResult> Edit(WriteOffEditViewModel model)
     {
+        RemoveIgnoredItemValidationErrors(model.Items);
         model.Items = NormalizeItems(model.Items);
         await FillLookupsAsync(model);
 
@@ -309,5 +311,24 @@ public class WriteOffsController(
         return items
             .Where(item => item.ProductId > 0 && item.Quantity > 0)
             .ToList();
+    }
+
+    private void RemoveIgnoredItemValidationErrors(IReadOnlyList<WriteOffItemInputViewModel> items)
+    {
+        for (var i = 0; i < items.Count; i++)
+        {
+            if (!IsEmptyItemRow(items[i]))
+            {
+                continue;
+            }
+
+            ModelState.Remove($"Items[{i}].ProductId");
+            ModelState.Remove($"Items[{i}].Quantity");
+        }
+    }
+
+    private static bool IsEmptyItemRow(WriteOffItemInputViewModel item)
+    {
+        return item.ProductId <= 0 && item.Quantity <= 0;
     }
 }

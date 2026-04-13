@@ -101,6 +101,10 @@ body {
     min-width: 320px;
 }
 
+.cart-badge {
+    margin-left: 0.35rem;
+}
+
 .document-row {
     background-color: #f8fbff;
     border-radius: 0.85rem;
@@ -121,6 +125,14 @@ body {
 .badge-soft {
     background-color: #e9f2ff;
     color: var(--app-primary-dark);
+}
+
+.cart-update-form {
+    min-width: 220px;
+}
+
+.cart-qty-input {
+    max-width: 90px;
 }
 
 @media (min-width: 992px) {
