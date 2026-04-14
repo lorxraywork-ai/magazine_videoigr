@@ -24,10 +24,16 @@ public class HomeController(ApplicationDbContext dbContext) : Controller
 
         if (User.Identity?.IsAuthenticated == true)
         {
-            model.ProductCount = await dbContext.Products.CountAsync();
-            model.LowStockCount = await dbContext.Products.CountAsync(item => item.StockQuantity <= 2);
-            model.SaleCount = await dbContext.Sales.CountAsync();
-            model.RevenueTotal = await dbContext.Sales.SumAsync(item => (decimal?)item.TotalAmount) ?? 0m;
+            model.ShowSummaryStatistics = !User.IsInRole(AppRoles.Client);
+
+            if (model.ShowSummaryStatistics)
+            {
+                model.ProductCount = await dbContext.Products.CountAsync();
+                model.LowStockCount = await dbContext.Products.CountAsync(item => item.StockQuantity <= 2);
+                model.SaleCount = await dbContext.Sales.CountAsync();
+                model.RevenueTotal = await dbContext.Sales.SumAsync(item => (decimal?)item.TotalAmount) ?? 0m;
+            }
+
             model.Cards = BuildAuthorizedCards(User);
         }
         else

@@ -23,6 +23,8 @@ public class DashboardViewModel
 
     public string? RoleName { get; set; }
 
+    public bool ShowSummaryStatistics { get; set; }
+
     public int ProductCount { get; set; }
 
     public int LowStockCount { get; set; }
